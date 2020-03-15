@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "336049500694",
+    "firebase_url": "https://camera-demo-54704.firebaseio.com",
+    "project_id": "camera-demo-54704",
+    "storage_bucket": "camera-demo-54704.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336049500694:android:1a5380f8cb6e0f7af7bb37",
+        "android_client_info": {
+          "package_name": "com.stech.camera_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336049500694-fdvh508cvfibh5bi4hes1b2d8i0fhq7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4LP6XKnWh8HtQUkaEUTUrP7hxb-mK3lg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336049500694-fdvh508cvfibh5bi4hes1b2d8i0fhq7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

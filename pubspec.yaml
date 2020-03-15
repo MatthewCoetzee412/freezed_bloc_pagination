@@ -1,0 +1,25 @@
+name: camera_demo
+description: A camera demo application with firebase incorperated
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  infinite_listview: ^1.0.1+1
+  flutter_slidable: ^0.5.3
+  draggable_scrollbar: ^0.0.4
+    
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+  uses-material-design: true
