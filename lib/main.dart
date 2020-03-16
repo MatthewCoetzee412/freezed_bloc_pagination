@@ -102,7 +102,7 @@ class _CameraHomeScreenState extends State<CameraHomeScreen> {
     //               child: FlatButton(child: Text(buildItems[selectedIndex]),onPressed: (){
     //                 Navigator.push(context, new MaterialPageRoute<Null>(
     //                   fullscreenDialog: true,
-    //                   builder: (context){
+    //                   builder: (context){`
     //                     return SelectionOption();
     //                   }
     //                 ));
@@ -290,12 +290,4 @@ class _EditCategoryState extends State<EditCategory> {
   }
 }
 
-class PCPDPEJKEF extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
 
