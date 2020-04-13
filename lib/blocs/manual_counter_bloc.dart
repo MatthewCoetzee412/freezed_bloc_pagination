@@ -33,6 +33,8 @@ class ManualCounterBloc{
 
   void dispose(){
     _counterController.close();
+    _incrementCounterController.close();
+    _decrementCounterController.close();
   }
 
 }

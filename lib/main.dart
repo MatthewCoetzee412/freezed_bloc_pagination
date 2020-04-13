@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:camera_demo/components/direct_select.dart';
 import 'package:camera_demo/screens/counterScreen.dart';
+import 'package:camera_demo/screens/manual_category_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-void main()=>runApp(CounterScreen());
+void main()=>runApp(ManualCategoryScreen());
 
 class MyBehaviour extends ScrollBehavior{
   @override   
