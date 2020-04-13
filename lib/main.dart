@@ -1,13 +1,14 @@
 import 'dart:math';
 
-import 'package:camera_demo/direct_select.dart';
+import 'package:camera_demo/components/direct_select.dart';
+import 'package:camera_demo/screens/counterScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-void main()=>runApp(MyApp());
+void main()=>runApp(CounterScreen());
 
 class MyBehaviour extends ScrollBehavior{
-  @override
+  @override   
   Widget buildViewportChrome(
       BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;

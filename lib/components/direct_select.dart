@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'main.dart';
+import 'package:camera_demo/main.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 
 class CustomDirectSelect extends StatefulWidget {
