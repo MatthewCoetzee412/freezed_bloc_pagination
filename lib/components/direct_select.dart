@@ -155,7 +155,7 @@ class _CustomDirectSelectState extends State<CustomDirectSelect> {
                 child: IconButton(
                   icon: Icon(Icons.add,color: Colors.white),//Replace with white
                   onPressed: (){
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AddCategory()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>null));
                   },
                 ),
               )

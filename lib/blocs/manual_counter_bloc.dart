@@ -9,7 +9,7 @@ class ManualCounterBloc{
   final _decrementCounterController = StreamController<int>();
 
   Stream<int> get counterStream => _counterController.stream;
-  StreamSink<int> get counterController => _counterController.sink;
+  StreamSink<int> get counterSink => _counterController.sink;
   StreamSink<int> get counterIncrement => _incrementCounterController.sink;
   StreamSink<int> get counterDecrement => _decrementCounterController.sink;
 
@@ -17,17 +17,16 @@ class ManualCounterBloc{
     _counterController.add(counter);
     _incrementCounterController.stream.listen(incrementCounter);
     _decrementCounterController.stream.listen(decrementCounter);
-
   }
 
   incrementCounter(int counter){
     counter = counter+1;
-    counterController.add(counter);
+    counterSink.add(counter);
   }
 
   decrementCounter(int counter){
     counter = counter-1;
-    counterController.add(counter);
+    counterSink.add(counter);
   }
 
 
