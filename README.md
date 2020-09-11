@@ -1,6 +1,6 @@
-# camera_demo
+# built_value_bloc
 
-A camera demo application with firebase incorperated
+A built value project using bloc to reproduce built value bloc error of streambuilder not updating
 
 ## Getting Started
 
