@@ -7,8 +7,6 @@ class FoodSerializer {
   static Food fromFirestore(DocumentSnapshot dSnap) {
     Map<String, dynamic> map = dSnap.data;
 
-    return Food((b) => b
-      ..document = dSnap
-      ..type = (map['type'] as String));
+    return Food(type: (map['type'] as String), document: dSnap);
   }
 }

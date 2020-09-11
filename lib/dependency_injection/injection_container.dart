@@ -1,5 +1,5 @@
-import 'package:camera_demo/bloc/built_value_bloc_export.dart';
-import 'package:camera_demo/pipe/bv_pipe.dart';
+import 'package:camera_demo/blocs/food_cud_bloc/food_cud_bloc.dart';
+import 'package:camera_demo/blocs/food_load_bloc/food_load_bloc.dart';
 import 'package:camera_demo/repository/firebase_repository.dart';
 import 'package:get_it/get_it.dart';
 
@@ -8,7 +8,6 @@ final getit = GetIt.instance;
 void initGetIt() {
   getit.registerLazySingleton<FirebaseRepository>(() => FirebaseRepository());
 
-  getit.registerFactory(() => BVPipe(repo: getit()));
-  getit.registerFactory(
-      () => BuiltValueBlocBloc(bvpipe: getit(), repo: getit()));
+  getit.registerFactory(() => FoodCudBloc(getit()));
+  getit.registerFactory(() => FoodLoadBloc(getit()));
 }

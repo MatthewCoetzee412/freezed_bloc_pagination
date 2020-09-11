@@ -1,11 +1,13 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:camera_demo/bloc/built_value_bloc_bloc.dart';
-import 'package:camera_demo/bloc/built_value_bloc_export.dart';
 import 'package:camera_demo/bloc_delegate/delegate.dart';
+import 'package:camera_demo/blocs/food_cud_bloc/food_cud_bloc.dart';
+import 'package:camera_demo/blocs/food_cud_bloc/food_cud_export.dart';
+import 'package:camera_demo/blocs/food_load_bloc/food_load_bloc.dart';
+import 'package:camera_demo/blocs/food_load_bloc/food_load_export.dart';
 import 'package:camera_demo/dependency_injection/injection_container.dart';
 import 'package:camera_demo/models/food_model.dart';
-import 'package:camera_demo/repository/firebase_repository.dart';
+import 'package:camera_demo/custom_error_handler/custom_error_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,11 +26,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _scrollControllerHomeScreen = ScrollController();
-  BuiltValueBlocBloc _bloc = getit<BuiltValueBlocBloc>();
+  bool _hasReachedEnd = false;
+  FoodLoadBloc _bloc = getit<FoodLoadBloc>();
 
   @override
   void initState() {
-    _bloc.add(LoadBuiltValueBlocEvent(documentSnapshot: null));
+    _bloc.add(FoodLoadEvent.load([], null));
     super.initState();
   }
 
@@ -40,13 +43,19 @@ class _MyAppState extends State<MyApp> {
   }
 
 //Notification Handler
-  bool _scrollNotificationHandler(ScrollNotification notification,
-      DocumentSnapshot amountDocumentSnapshot, bool hasReachedEndOfDocuments) {
+  bool _scrollNotificationHandler(
+      ScrollNotification notification,
+      DocumentSnapshot amountDocumentSnapshot,
+      bool hasReachedEndOfDocuments,
+      List<Food> items) {
+    print(hasReachedEndOfDocuments);
+
     if (notification is ScrollEndNotification &&
         _scrollControllerHomeScreen.position.extentAfter == 0 &&
         !hasReachedEndOfDocuments) {
-      _bloc.add(
-          LoadBuiltValueBlocEvent(documentSnapshot: amountDocumentSnapshot));
+      print('INSIDE SCROLL NOTE');
+
+      _bloc.add(FoodLoadEvent.load(items, amountDocumentSnapshot));
     }
     return false;
   }
@@ -59,142 +68,71 @@ class _MyAppState extends State<MyApp> {
         centerTitle: true,
         title: Text('Built Value bloc project'),
       ),
-      body: BlocListener<BuiltValueBlocBloc, BuiltValueBlocState>(
+      body: BlocListener<FoodLoadBloc, FoodLoadState>(
           bloc: _bloc,
           listener: (context, state) {
-            print(state.exception);
+            state.when(
+              intial: () {},
+              loading: () {},
+              success: (_) {},
+              error: (ItemFailure itemFailure) {
+                if (itemFailure == ItemFailure.noMoreDocumentsException()) {
+                  setState(() {
+                    _hasReachedEnd = true;
+                  });
+                }
+              },
+            );
           },
-          child: BlocBuilder<BuiltValueBlocBloc, BuiltValueBlocState>(
+          child: BlocBuilder<FoodLoadBloc, FoodLoadState>(
               bloc: _bloc,
               builder: (context, state) {
-                if (state.isLoading != null && state.isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                if (state.isLoaded != null && state.isLoaded) {
-                  return StreamBuilder(
-                    stream: state.items.asStream(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
+                return state.maybeWhen(
+                    orElse: () => Container(),
+                    intial: () => Container(),
+                    loading: () => Center(
                           child: CircularProgressIndicator(),
+                        ),
+                    success: (items) {
+                      if (items.isEmpty) {
+                        return Center(
+                          child: Text('Currently no items'),
                         );
                       } else {
-                        BuiltList<Food> foodItems = snapshot.data;
-
-                        if (foodItems.isEmpty) {
-                          return Center(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('You currently have no items'),
-                          ));
-                        } else {
-                          return Container(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                            child: NotificationListener<ScrollNotification>(
-                              onNotification: (notification) =>
-                                  _scrollNotificationHandler(
-                                      notification,
-                                      foodItems.last.document,
-                                      state.hasReachedEndofDocuments),
-                              child: SingleChildScrollView(
-                                controller: _scrollControllerHomeScreen,
-                                child: Column(
-                                  children: [
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: foodItems.length,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          leading: Icon(Icons.album),
-                                          title: Text(
-                                              foodItems[index].type.toString()),
-                                        );
-                                      },
-                                    )
-                                  ],
-                                ),
+                        print('inside success state');
+                        return Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: (notification) =>
+                                _scrollNotificationHandler(
+                                    notification,
+                                    items?.last?.document,
+                                    _hasReachedEnd,
+                                    items),
+                            child: SingleChildScrollView(
+                              controller: _scrollControllerHomeScreen,
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: items.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        leading: Icon(Icons.album),
+                                        title:
+                                            Text(items[index].type.toString()),
+                                      );
+                                    },
+                                  )
+                                ],
                               ),
                             ),
-                          );
-                        }
+                          ),
+                        );
                       }
-                    },
-                  );
-                  //!Work, but not ideal
-                  // return FutureBuilder<Stream<QuerySnapshot>>(
-                  //   future: FirebaseRepository().getMoreItems(null),
-                  //   builder: (context, fsnapshot) {
-                  //     if (!fsnapshot.hasData) {
-                  //       return Center(
-                  //         child: CircularProgressIndicator(),
-                  //       );
-                  //     } else {
-                  //       return StreamBuilder<QuerySnapshot>(
-                  //         stream: fsnapshot.data,
-                  //         builder: (context, snapshot) {
-                  //           if (!snapshot.hasData) {
-                  //             return Center(
-                  //               child: CircularProgressIndicator(),
-                  //             );
-                  //           } else {
-                  //             List<DocumentSnapshot> foodItems =
-                  //                 snapshot.data.documents;
-
-                  //             if (foodItems.isEmpty) {
-                  //               return Center(
-                  //                   child: Padding(
-                  //                 padding: const EdgeInsets.all(8.0),
-                  //                 child: Text('You currently have no items'),
-                  //               ));
-                  //             } else {
-                  //               return Container(
-                  //                 height: MediaQuery.of(context).size.height,
-                  //                 width: MediaQuery.of(context).size.width,
-                  //                 child:
-                  //                     NotificationListener<ScrollNotification>(
-                  //                   onNotification: (notification) =>
-                  //                       _scrollNotificationHandler(
-                  //                           notification,
-                  //                           foodItems.last,
-                  //                           state.hasReachedEndofDocuments),
-                  //                   child: SingleChildScrollView(
-                  //                     controller: _scrollControllerHomeScreen,
-                  //                     child: Column(
-                  //                       children: [
-                  //                         ListView.builder(
-                  //                           shrinkWrap: true,
-                  //                           itemCount: foodItems.length,
-                  //                           physics:
-                  //                               NeverScrollableScrollPhysics(),
-                  //                           itemBuilder: (context, index) {
-                  //                             return ListTile(
-                  //                               leading: Icon(Icons.album),
-                  //                               title: Text(foodItems[index]
-                  //                                       ['type']
-                  //                                   .toString()),
-                  //                             );
-                  //                           },
-                  //                         )
-                  //                       ],
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //               );
-                  //             }
-                  //           }
-                  //         },
-                  //       );
-                  //     }
-                  //   },
-                  // );
-                }
-
-                return Container();
+                    });
               })),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
@@ -215,10 +153,10 @@ class AddFoodItem extends StatefulWidget {
 
 class _AddFoodItemState extends State<AddFoodItem> {
   TextEditingController controller = new TextEditingController();
-  BuiltValueBlocBloc _bloc = getit<BuiltValueBlocBloc>();
+  FoodCudBloc _bloc = getit<FoodCudBloc>();
 
   void _onPressedAddFoodItem() {
-    _bloc.add(AddFoodItemEvent(food: Food((b) => b..type = controller.text)));
+    _bloc.add(FoodCudEvent.add(Food(type: controller.text, document: null)));
   }
 
   @override
@@ -236,12 +174,15 @@ class _AddFoodItemState extends State<AddFoodItem> {
         centerTitle: true,
         title: Text('Add Food item'),
       ),
-      body: BlocListener<BuiltValueBlocBloc, BuiltValueBlocState>(
+      body: BlocListener<FoodCudBloc, FoodCudState>(
         bloc: _bloc,
         listener: (context, state) {
-          if (state.isSuccessful != null && state.isSuccessful) {
-            Navigator.of(context).pop();
-          }
+          state.when(
+            intial: () {},
+            loading: () {},
+            success: () => Navigator.of(context).pop(),
+            error: (err) => print(err),
+          );
         },
         child: Column(
           children: [
