@@ -1,16 +1,35 @@
-# built_value_bloc
+---
+The chemical process of life
+---
 
-A built value project using bloc to reproduce built value bloc error of streambuilder not updating
+80% of the body is water
 
-## Getting Started
+Metabolism - The chemical reactions which occur 
+	     inside each living orgnism all the time
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+Metabolic reactions take place when chemicals 
+dissolve in water
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Water is needed for dissolving enzymes, and get
+ride of waste products 
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+Carbohydrates
+---
+
+Carbs include starches and sugars
+
+Carbs - Carbon(c), hydrogen(h) and oxygen(o)
+
+Examples:
+ - Simple sugars or monosaccharides
+ - Complex sugars or disaccharides
+    - Sucrose
+    - Maltose
+ - Many simple sugars = Poly saccarides
+    - Cellulose
+    - Starch
+
+Animal cells after contain a polysacchride
+called glycogen.
